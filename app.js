@@ -10,6 +10,7 @@ const dbConfig = require('./models');
 
 const indexRouter = require('./routes');
 const authRouter = require('./routes/auth');
+const v1Router = require('./routes/v1');
 
 const passport = require('passport');
 const passportConfig = require('./config/passport/passport');
@@ -56,6 +57,9 @@ app.use('/', indexRouter);
 
 // 회원가입, 로그인 처리용 라우터 분리
 app.use('/auth', authRouter);
+
+// v2 API router
+app.use('/v1', v1Router);
 
 // 404 not found
 app.use((req, res, next) => {
