@@ -33,6 +33,7 @@ HashTag.belongsToMany(Post, {
 
 // User : Domain = 1 : N 관계 설정
 User.hasMany(Domain);
+Domain.belongsTo(User);
 
 module.exports = {
     User,  Post,  HashTag, Domain,

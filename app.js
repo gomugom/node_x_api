@@ -53,13 +53,14 @@ passportConfig();
 
 sequelize.sync({force: false, alter: true}).then(() => console.log('db connection success')).catch((err) => console.error('DB connection Fail'));
 
-app.use('/', indexRouter);
+// v2 API router
+app.use('/v1', v1Router);
 
 // 회원가입, 로그인 처리용 라우터 분리
 app.use('/auth', authRouter);
 
-// v2 API router
-app.use('/v1', v1Router);
+app.use('/', indexRouter);
+
 
 // 404 not found
 app.use((req, res, next) => {

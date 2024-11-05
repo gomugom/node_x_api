@@ -35,3 +35,18 @@ exports.verifyToken = (req, res, next) => {
         });
     }
 }
+
+exports.v1VerifyTokenMiddleware = (req, res, next) => {
+    const token = req.headers.authorization;
+    try {
+        const decoded = jwt.verify(token,  process.env.JWT_SECRET);
+        res.locals.decoded = decoded;
+        next(); // controller 호출ㅉ
+    } catch (err) {
+        console.error(err);
+        return res.json({
+            code: 401,
+            message: 'fail verify token',
+        });
+    }
+}

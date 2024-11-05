@@ -1,4 +1,8 @@
-const {Domain, User} = require("../models");
+const { User, Domain, Post, HashTag } = require('../models');
+// const User = require('../models/user');
+// const Domain = require('../models/domain');
+// const Post = require('../models/post');
+// const HashTag = require('../models/hashtag');
 const jwt = require('jsonwebtoken');
 
 exports.createToken = async (req, res, next) => {
@@ -26,12 +30,14 @@ exports.createToken = async (req, res, next) => {
         const token = jwt.sign({
             id: domain.User.id,
             nickname: domain.User.nick,
-        }, procss.env.JWT_SECRET, {
+        }, process.env.JWT_SECRET, {
             expiresIn: '1m',
-            issue: 'node_x' // 발급자
+            issuer: 'node_x' // 발급자
         });
 
         return res.json({
+            code: 200,
+            message: '토큰이 발급되었습니다.',
             token,
         });
 
@@ -46,4 +52,66 @@ exports.createToken = async (req, res, next) => {
 
 exports.tokenTest = (req, res, next) => {
     res.json(res.locals.decoded);
+}
+
+exports.getMyPostsController = async (req, res, next) => {
+
+    try {
+
+        const myPostList = await Post.findAll({
+            where: {
+                userId: res.locals.decoded?.id // verify 미들웨어에서 저장한 사용자 정보
+            }
+        });
+
+        console.log(myPostList);
+
+        return res.json({
+            code: 200,
+            payload: myPostList,
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            code: 500,
+            message: '서버 에러',
+        });
+    }
+
+}
+
+exports.getPostsByHashtagController = async (req, res, next) => {
+
+    const hashtag = req.params.title;
+
+    try {
+        const searchedHashtag = await HashTag.findOne({
+            where: {
+                title: hashtag,
+            }
+        });
+
+        if (!searchedHashtag) {
+            return res.status(404).json({
+                code: 404,
+                message: '검색 결과가 없습니다.'
+            });
+        }
+
+        const posts = await searchedHashtag.getPosts();
+
+        return res.json({
+            code: 200,
+            payloadType: posts,
+        });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            code: 500,
+            message: '서버 에러',
+        });
+    }
+
 }
