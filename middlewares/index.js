@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
 
 exports.isLoggedIn = (req, res, next) => {
     if (req.isAuthenticated()) { // passport에서 제공하는 메서드(로그인 유무 제공)
@@ -50,3 +51,14 @@ exports.v1VerifyTokenMiddleware = (req, res, next) => {
         });
     }
 }
+
+exports.apiLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1분
+    max: 10, // 최대 100회 요청 허용
+    handler: (req, res, next, options) => {
+        res.status(options.statusCode).json({
+            code: options.statusCode, // 기본값은 429
+            message: '요청 한도를 초과하였습니다. 잠시 후 다시 시도해주세요.',
+        });
+    },
+});
