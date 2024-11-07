@@ -101,6 +101,13 @@ exports.getPostsByHashtagController = async (req, res, next) => {
 
         const posts = await searchedHashtag.getPosts();
 
+        if(posts.length === 0) {
+            return res.status(404).json({
+                code: 404,
+                message: '검색 결과가 없습니다.',
+            });
+        }
+
         return res.json({
             code: 200,
             payloadType: posts,

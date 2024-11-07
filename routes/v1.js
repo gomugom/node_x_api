@@ -1,7 +1,11 @@
 const express = require('express');
-const {verifyToken} = require("../middlewares");
+const {verifyToken, deprecated, apiLimiter} = require("../middlewares");
 const {createToken, tokenTest, getMyPostsController, getPostsByHashtagController} = require("../controllers/v1");
 const router = express.Router();
+
+router.use(deprecated);
+
+router.use(apiLimiter);
 
 // /v1/token
 router.post('/token', createToken);
