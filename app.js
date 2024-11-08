@@ -12,6 +12,7 @@ const indexRouter = require('./routes');
 const authRouter = require('./routes/auth');
 const v1Router = require('./routes/v1');
 const v2Router = require('./routes/v2');
+const userRouter = require('./routes/user');
 
 const passport = require('passport');
 const passportConfig = require('./config/passport/passport');
@@ -54,6 +55,8 @@ passportConfig();
 
 sequelize.sync({force: false, alter: true}).then(() => console.log('db connection success')).catch((err) => console.error('DB connection Fail'));
 
+
+app.use('/', indexRouter);
 // v1 API router
 app.use('/v1', v1Router);
 
@@ -62,8 +65,7 @@ app.use('/v2', v2Router);
 
 // 회원가입, 로그인 처리용 라우터 분리
 app.use('/auth', authRouter);
-
-app.use('/', indexRouter);
+app.use('/user', userRouter);
 
 
 
