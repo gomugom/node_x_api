@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const {Domain} = require("../models");
+const cors = require('cors');
 
 exports.isLoggedIn = (req, res, next) => {
     if (req.isAuthenticated()) { // passport에서 제공하는 메서드(로그인 유무 제공)
@@ -84,12 +85,15 @@ exports.corsWhenDomainMatches = async (req, res, next) => {
         }
     });
 
+    // new URL(req.get('origin')).host => http:// 제거
+    
     if (domain) { // 동일 도메인은 cors 문제가 없기 때문에 굳이 등록할 필요가 없음
         // 등록된 도메인인 경우(cors 즉 교차 출처여도 허용하도록 함)
         const corsOptions = {
             origin: req.get('origin'), // 허용할 도메인
+            // origin: true => 전부다 허용해버림
             methods: ['GET', 'POST', 'PUT', 'DELETE'], // 허용할 HTTP 메서드
-            credentials: true, // 교차 출처 요청시 인증정보를 허용할지 유무
+            credentials: true, // 쿠키요청도 허용하고자 할 때, 교차 출처 요청시 인증정보를 허용할지 유무
         };
         
         // 미들웨어 확장법
