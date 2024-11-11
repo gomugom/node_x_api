@@ -2,39 +2,47 @@ const User = require('./user');
 const Post = require('./post');
 const HashTag = require('./hashtag');
 const Domain = require('./domain');
-const {sequelize} = require("./db");
+const Follow = require('./follow');
+const Sequelize = require('sequelize');
+const db = require("./db");
+
+// 모델을 불러와 sequelize에 등록
+
+db.User = User;
+db.Post = Post;
+db.HashTag = HashTag;
+db.Domain = Domain;
+db.Follow = Follow;
 
 // 관계 생성
 // User : Post = 1: N
-User.hasMany(Post);
-Post.belongsTo(User);
+db.User.hasMany(db.Post);
+db.Post.belongsTo(db.User);
 
 // 사용자 : 사용자 = N : M (팔로잉 관계)
-User.belongsToMany(User, { // 팔로워
+db.User.belongsToMany(db.User, { // 팔로워
     foreignKey: 'followingId',
     as: 'Followers',
-    through: 'Follow' // 중간테이블
+    through: db.Follow // 중간테이블
 });
 
-User.belongsToMany(User, { // 팔로잉
+db.User.belongsToMany(db.User, { // 팔로잉
     foreignKey: 'followerId',
     as: 'Followings',
-    through: 'Follow',
+    through: db.Follow,
 });
 
 // Post : Hashtags = N : M
-Post.belongsToMany(HashTag, {
+db.Post.belongsToMany(db.HashTag, {
     through: 'PostHashTag'
 });
 
-HashTag.belongsToMany(Post, {
+db.HashTag.belongsToMany(db.Post, {
     through: 'PostHashTag'
 });
 
 // User : Domain = 1 : N 관계 설정
-User.hasMany(Domain);
-Domain.belongsTo(User);
+db.User.hasMany(db.Domain);
+db.Domain.belongsTo(db.User);
 
-module.exports = {
-    User,  Post,  HashTag, Domain, sequelize
-}
+module.exports = db;

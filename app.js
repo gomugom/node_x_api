@@ -5,8 +5,7 @@ const path = require('path');
 const session = require('express-session');
 const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
-const { sequelize } = require('./models/db');
-const dbConfig = require('./models');
+const { sequelize } = require('./models');
 
 const indexRouter = require('./routes');
 const authRouter = require('./routes/auth');
@@ -53,7 +52,7 @@ app.use(passport.session()); // 세션에 저장되는 부분
 
 passportConfig();
 
-sequelize.sync({force: false, alter: true}).then(() => console.log('db connection success')).catch((err) => console.error('DB connection Fail'));
+sequelize.sync({force: true}).then(() => console.log('db connection success')).catch((err) => console.error('DB connection Fail', err));
 
 
 app.use('/', indexRouter);
