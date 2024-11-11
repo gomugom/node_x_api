@@ -36,5 +36,5 @@ User.hasMany(Domain);
 Domain.belongsTo(User);
 
 module.exports = {
-    User,  Post,  HashTag, Domain,
+    User,  Post,  HashTag, Domain, sequelize
 }
