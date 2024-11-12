@@ -6,7 +6,7 @@ const { sequelize } = require('../models'); // sequelize를 이번엔 mock이 �
 // 테스트 실행 전 DB 연결
 // beforeAll => 모든 테스트 실행 전 딱 한번 호출
 beforeAll(async () => {
-    await sequelize.sync({ force: true }); // 새로 시작할 때마다 데이터 날리고 새로 생성함
+    await sequelize.sync({force: true}); // 새로 시작할 때마다 데이터 날리고 새로 생성함
 });
 
 // 각 테스트 호출 직전 호출되는 메서드
@@ -14,7 +14,9 @@ beforeEach(() => {
 
 });
 
+
 describe('POST /join', () => {
+
    test('로그인 안 했으면 가입', async () => {
       await request(app).post('/auth/join')
           .send({
@@ -115,6 +117,3 @@ afterEach(() => {
 });
 
 // 모든 테스트가 끝나고 호출되는 함수
-afterAll(async () => {
-    
-});

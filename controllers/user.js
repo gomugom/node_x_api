@@ -3,7 +3,7 @@ const {follow} = require("../services/user");
 
 exports.follow = async (req, res, next) => {
   try {
-
+    // ?a=3 => query, /path/:id => params, json => body
     const result = await follow(req.user.id,  req.params.id);
 
     if (result == 'ok') {
